@@ -1,0 +1,43 @@
+{
+  "name": "node",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "debug": "webpack --config config/webpack.debug.js",
+    "dev": "webpack --config config/webpack.dev.js",
+    "prod": "webpack --config config/webpack.prod.js"
+  },
+  "author": "Atsushi Nemoto",
+  "license": "ISC",
+  "devDependencies": {
+    "deepmerge": "^4.2.2",
+    "dotenv": "^16.0.1",
+    "eslint": "^8.23.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-vue": "^9.4.0",
+    "sass": "~1.32",
+    "sass-loader": "^13.0.2",
+    "vis-data": "^7.1.4",
+    "vis-network": "^9.1.2",
+    "vis-util": "^5.0.3",
+    "vue-loader": "^15.0.0",
+    "vue-style-loader": "^4.1.3",
+    "vue-template-compiler": "^2.7.8",
+    "vuetify": "^2.6.9",
+    "vuetify-loader": "^1.9.2",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.3",
+    "webpack-merge": "^5.8.0"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "codemirror": "^5.65.8",
+    "lodash": "^4.17.21",
+    "markdown-it": "^13.0.1",
+    "vue": "^2.7.8",
+    "vue-vis-network": "^1.0.2"
+  }
+}

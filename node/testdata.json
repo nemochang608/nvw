@@ -1,0 +1,36 @@
+{
+    "nodes": [
+        {
+            "name": "vmx1"
+        },
+        {
+            "name": "vmx11"
+        },
+        {
+            "name": "vmx12"
+        },
+        {
+            "name": "vmx2"
+        },
+        {
+            "name": "vmx3"
+        }
+    ],
+    "edges": [
+        {
+            "name": "ovsbr-1",
+            "nodes": [
+                "vmx1",
+                "vmx2",
+                "vmx3"
+            ]
+        },
+        {
+            "name": "ovsbr-2",
+            "nodes": [
+                "vmx11",
+                "vmx12"
+            ]
+        }
+    ]
+}
