@@ -40,7 +40,12 @@ function drawNetwork(c, n, e, o) {
 
   const { extraNodes, extraEdges } = processVisEdge(edges);
   // nodes
-  nodes = nodes.map((x) => ({ id: x.name, label: x.name, shape: 'square' }));
+  nodes = nodes.map((x) => ({
+    id: x.name,
+    label: x.name,
+    shape: x.image === undefined ? 'square' : 'image',
+    image: x.image === undefined ? undefined : x.image,
+  }));
   // edges
   edges = edges.filter((x) => x.nodes.length === 2).map((x) => ({
     id: x.name, from: x.nodes[0], to: x.nodes[1], value: 3, title: x.name,

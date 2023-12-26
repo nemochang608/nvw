@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nvw"
-version = "1.0.5"
+version = "1.1.0"
 description = "Network test frontend"
 license = "Apache-2.0"
 authors = ["Atsushi Nemoto"]
@@ -27,5 +27,5 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-nvw = 'nvw:run'
+nvw-launch = 'nvw:run'
 nvw-confgen = 'nvw:confgen'
