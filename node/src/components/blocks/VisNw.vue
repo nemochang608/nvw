@@ -43,8 +43,8 @@ function drawNetwork(c, n, e, o) {
   nodes = nodes.map((x) => ({
     id: x.name,
     label: x.name,
-    shape: x.image === undefined ? 'square' : 'image',
-    image: x.image === undefined ? undefined : x.image,
+    shape: (x.image === undefined || x.image === null) ? 'square' : 'image',
+    image: (x.image === undefined || x.image === null) ? undefined : x.image,
   }));
   // edges
   edges = edges.filter((x) => x.nodes.length === 2).map((x) => ({

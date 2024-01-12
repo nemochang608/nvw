@@ -1,29 +1,30 @@
 <template>
   <nview-dialog
-      :dialog_title="`Result of command '${command_input}'`"
-      :dialog_in_progress="executing_command"
-      :show_dialog="command_result_dialog"
-      :close_handler="commandResultDialogCloseHandler"
-      @dialogStateChanged="(e)=>{this.command_result_dialog=e}"
+    v-bind="{showDialog}"
+    dialog-title="Result of command"
+    @dialog-state-changed="(e)=>{showDialogInner=e}"
   >
       <v-tabs
       background-color="accent-4"
       center-active
-      v-model="command_result_tab"
+      v-model="activeTabName"
       >
-      <v-tab
-          v-for="node in checked_nodes"
-          @click="resultTabClickHandler(`${node.name}-com-result`)"
-          :key="node.name"
-      >{{ node.name }}</v-tab>
+        <v-tab v-for="nodeName in selectedNodes"
+          @click="h(nodeName)"
+          :key="nodeName"
+          >{{ nodeName }}
+        </v-tab>
       </v-tabs>
-      <v-tabs-items v-model="command_result_tab">
+      <v-tabs-items v-model="activeTabName">
       <v-tab-item
-          v-for="node in checked_nodes"
-          :key="node.name"
-          class="tabitem3"
+        v-for="nodeName in selectedNodes"
+        :key="nodeName" class="tabitem"
       >
-          <textarea :id="node.name + '-com-result'" v-model="node.result"></textarea>
+        <nview-highlighted-textarea
+          :id="nodeName"
+          :ref="nodeName"
+          :line-numbers="true"
+        ></nview-highlighted-textarea>
       </v-tab-item>
       </v-tabs-items>
   </nview-dialog>
@@ -31,19 +32,61 @@
 
 <script>
 import NviewDialog from './shared/NviewDialog.vue';
+import NviewHighlightedTextarea from '../parts/NviewHighlightedTextarea.vue';
+import axiosRepositoryFactory from '../../repositories/axios/axiosRepositoryFactory';
 
 export default {
-  components: { NviewDialog },
+  watch: {
+    showDialog(val) {
+      // timeout 必要
+      setTimeout(
+        () => { this.showDialogInner = val; },
+        300,
+      );
+    },
+    showDialogInner(val) {
+      this.$emit('dialog-state-changed', val);
+    },
+  },
+  props: {
+    envName: {
+      type: String,
+      required: true,
+    },
+    showDialog: {
+      type: Boolean,
+      required: true,
+    },
+    editingReport: {
+      type: String,
+      required: true,
+    },
+    selectedNodes: {
+      type: Array,
+      required: true,
+    },
+    commandResult: {
+      type: Array,
+      required: true,
+    }
+  },
+  data() {
+    return {
+      showDialogInner: false,
+      downloadInProgress: false,
+      activeTabName: null,
+    };
+  },
+  components: {
+    NviewDialog,
+    NviewHighlightedTextarea,
+  },
   methods: {
-    resultTabClickHandler(name) {
-      window.setTimeout(() => {
-        const textarea = document.getElementById(name);
-        if (textarea.nextSibling !== null && !textarea.nextSibling.className.includes('CodeMirror')) {
-          CodeMirror.fromTextArea(textarea, { lineNumbers: true });
-        } else if (textarea.nextSibling === null) {
-          CodeMirror.fromTextArea(textarea, { lineNumbers: true });
-        }
-      }, 200);
+    h(nodeName) {
+      if (this.$refs[nodeName][0].getValue() === '') {
+        console.log(this.commandResult)
+        this.$refs[nodeName][0].inputValue = this.commandResult.filter(x=>(x.name===nodeName))[0].result
+      }
     },
   },
 };

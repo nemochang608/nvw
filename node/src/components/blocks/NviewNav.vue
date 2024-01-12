@@ -36,16 +36,21 @@
       <v-row v-show="selecting">
         <v-col>
           <nview-simple-button
-            @click.stop="commandInputDialog"
+	    :handlers="{click(e){e.stopImmediatePropagation(); commandInputDialog = true}}"
             :disabled="selectedNodes.length===0"
             >Execute
           </nview-simple-button>
-        <!--
           <nview-command-input-dialog
-            :showDialog="commandInputDialog">
+            @dialog-state-changed="(e)=>commandInputDialog = e"
+            @command-executed="(e)=>{commandResultDialog = true; commandResult.push(e)}"
+            :showDialog="commandInputDialog"
+            v-bind="{selectedNodes, editingReport, envName}">
           </nview-command-input-dialog>
-          <nview-command-result-dialog></nview-command-result-dialog>
-        -->
+          <nview-command-result-dialog
+            @dialog-state-changed="(e)=>commandResultDialog = e"
+            :showDialog="commandResultDialog"
+            v-bind="{selectedNodes, editingReport, envName, commandResult}"
+	  ></nview-command-result-dialog>
         </v-col>
         <v-col>
           <nview-simple-button
@@ -79,12 +84,12 @@
 </template>
 
 <script>
+import NviewCommandInputDialog from './NviewCommandInputDialog.vue';
+import NviewCommandResultDialog from './NviewCommandResultDialog.vue';
 import NviewSimpleButton from '../parts/NviewSimpleButton.vue';
 import NviewConfigViewDialog from './NviewConfigViewDialog.vue';/*
 import NviewConfigPutDialog from './NviewConfigPutDialog.vue';
-import NviewConfigPutResultDialog from './NviewConfigPutResultDialog.vue';
-import NviewCommandInputDialog from './NviewCommandInputDialog.vue';
-import NviewCommandResultDialog from './NviewCommandResultDialog.vue'; */
+import NviewConfigPutResultDialog from './NviewConfigPutResultDialog.vue'; */
 
 export default {
   watch: {
@@ -124,15 +129,17 @@ export default {
       configPutResultDialog: false,
       configViewDialog: false,
       commandInputDialog: false,
+      commandResultDialog: false,
+      commandResult: [],
     };
   },
   components: {
+    NviewCommandInputDialog,
+    NviewCommandResultDialog,
     NviewSimpleButton,
     NviewConfigViewDialog, /*
     NviewConfigPutDialog,
-    NviewConfigPutResultDialog,
-    NviewCommandInputDialog,
-    NviewCommandResultDialog, */
+    NviewConfigPutResultDialog, */
   },
 };
 </script>

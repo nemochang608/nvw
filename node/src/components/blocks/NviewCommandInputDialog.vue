@@ -1,26 +1,20 @@
 <template>
-  <v-dialog v-model="command_input_dialog">
-    <v-card>
-      <v-card-text>
-        <v-text-field
-          v-model="command_input"
-          :counter="50"
-          label="Command"
-          required
-        ></v-text-field>
-      </v-card-text>
-      <v-card-actions>
-        <v-btn
-          text color="blue darken-1"
-          @click="executeCommand"
-        >Execute</v-btn>
-        <v-btn
-          text color="blue darken-1"
-          @click="command_input_dialog = !command_input_dialog"
-        >Close</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <nview-dialog
+    v-bind="{showDialog}"
+    @dialog-state-changed="(e)=>{showDialogInner=e}"
+    :dialog-title="`Execute Command`"
+    width="40vw"
+    min-width="400px"
+    height="300px"
+    :action-buttons="{Send(e){executeCommand()}}"
+  >
+    <v-text-field
+      v-model="commandInput"
+      :counter="50"
+      label="Command"
+      required
+    ></v-text-field>
+  </nview-dialog>
 </template>
 
 <script>
@@ -29,21 +23,64 @@ import axiosRepositoryFactory from '../../repositories/axios/axiosRepositoryFact
 const commandExecRepository = axiosRepositoryFactory.get('commandExec');
 const reportEntryRepository = axiosRepositoryFactory.get('reportEntry');
 
+import NviewDialog from './shared/NviewDialog.vue';
+
 export default {
+  watch: {
+    showDialog(val) {
+      // timeout 必要
+      setTimeout(
+        () => { this.showDialogInner = val; },
+        300,
+      );
+    },
+    showDialogInner(val) {
+      this.$emit('dialog-state-changed', val);
+    },
+  },
+  props: {
+    envName: {
+      type: String,
+      required: true,
+    },
+    showDialog: {
+      type: Boolean,
+      required: true,
+    },
+    editingReport: {
+      type: String,
+      required: true,
+    },
+    selectedNodes: {
+      type: Array,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      showDialogInner: false,
+      commandInput: '',
+    };
+  },
+  components: {
+    NviewDialog,
+  },
   methods: {
     executeCommand() {
-      const command = this.command_input;
+      const command = this.commandInput;
 
-      this.command_input_dialog = false;
-      this.command_result_dialog = true;
-      this.nodes.filter((x) => (x.checked)).forEach((x) => {
+      this.showDialogInner = false;
+
+      this.selectedNodes.forEach((x) => {
         commandExecRepository.create(
           this.envName,
-          x.name,
+          x,
           { command },
         )
-          .then((response) => {
-            this.checked_nodes.push({ name: x.name, result: response.data.output });
+        .then((response) => {
+          this.$emit('command-executed', { name: x, result: response.data.output });
+/*
+
             if (this.current_report !== null) {
               reportEntryRepository.create(
                 {
@@ -57,7 +94,8 @@ export default {
                 },
               );
             }
-          });
+*/
+        });
       });
     },
   },

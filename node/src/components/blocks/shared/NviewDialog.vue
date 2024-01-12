@@ -1,14 +1,14 @@
 <template>
   <div>
-    <v-dialog v-model="showDialogInner" min-width="800px" width="80vw">
-      <v-card height="90vh">
+    <v-dialog v-model="showDialogInner" :min-width="minWidth" :width="width">
+      <v-card :height="height">
         <v-progress-linear
           v-show="actionInProgressInner"
           color="deep-purple" height="10"
           indeterminate
         ></v-progress-linear>
         <v-card-title class="text-h5 lighten-2">{{ dialogTitle }}</v-card-title>
-        <v-card-text class="card-text-container">
+        <v-card-text class="card-text-container" :style="`height: calc(${height} - 10vh)`">
           <slot></slot>
         </v-card-text>
         <v-card-text v-show="actionSuccessedMessage!==''" class="green--text"
@@ -36,9 +36,11 @@
 </template>
 
 <style>
+/*
 .card-text-container {
   height: 80vh;
 }
+*/
 </style>
 
 <script>
@@ -63,6 +65,21 @@ export default {
     },
   },
   props: {
+    minWidth: {
+      type: String,
+      required: false,
+      default: "800px",
+    },
+    width: {
+      type: String,
+      required: false,
+      default: "80vw",
+    },
+    height: {
+      type: String,
+      required: false,
+      default: "90vh",
+    },
     showDialog: {
       type: Boolean,
       required: false,
